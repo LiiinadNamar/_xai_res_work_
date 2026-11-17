@@ -1,5 +1,5 @@
 **Goal.**  
-Three things:
+4 things:
 1. Add k-fold (GroupKFold) so each model is trained and tested on separate patients
 — the whole patient is either in train or in test, never both.
 The intent is the same spirit as "train on known data, validate on unseen":
@@ -15,7 +15,7 @@ next to the real HUPA-UCM cohort.
 **What I did (short).**  
 Built hourly windows from 5-minute tables, labelled hypo in the next hour, and compared four models — LR, SVC, GRU, 
 and a tiny Transformer — under one shared GroupKFold(5) on patient. 
-Reported AUPRC mean ± std, plus training time, memory and per-epoch timing. 
+Reported AUPRC mean +- std, plus training time, memory and per-epoch timing. 
 Fixed seeds including batch-shuffle order for the neural nets.
 
 ## Windows, features and label

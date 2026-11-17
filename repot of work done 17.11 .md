@@ -117,7 +117,8 @@ The old high score was most probably an artefact of testing on the same patient'
 
 1. **Fix ReplayBG.** Make the twin data behave more like real CGM before trusting it.
 2. **Save attention maps for the Transformer.** The current run does not store them — I did not think to save attention in this pass.
-Next run: keep the encoder's attention weights and save a per-window heatmap over the 12 time steps, so we can see which minutes before a predicted hypo the model attends to.
+For: comparison of datasets. On simglucose and ReplayBG, the trajectories are smooth, on HUPA, there is sensor noise. If on HUPA the attention jumps between random bins, and on the simulators it follows the trend, the model interprets the clean and real signals differently. Then i need to think what can be done.
+
 
   
 

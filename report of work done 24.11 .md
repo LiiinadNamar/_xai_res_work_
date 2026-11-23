@@ -9,6 +9,22 @@ No training. This shows how much a model adds over "already low means hypo next 
 3. **Add a time split.** Within each patient, the first 80% of windows train and the last 20% test.
 GroupKFold tests on unseen patients. The time split tests on the future of known patients, which is how a personal alert would be used.
 
+For each patient, windows are sorted by time and split into 6 chunks of about 7 days (on simglucose, ~1030 windows, ~170 hours each), as in sklearn TimeSeriesSplit. Fold k trains on everything before the test chunk and tests on that chunk.
+
+Train stops before the test starts. The minimum gap is 1 hour, one window: otherwise the last training window learns glucose that is already an input in the test, and the first window after the test learns glucose that was the test label. The gap uses the time column, not the row index, because HUPA drops windows with holes and the next row can be many hours later.
+
+A 1-hour gap only blocks the exact input/label overlap. Glucose stays autocorrelated for several hours, so a second run with a 1-day gap is the fairer check. On walk-forward there is one cut per fold per patient, so dropping that day costs little data.
+
+A day is a better cut than an hour: each test chunk then has night, day, and meals. An hour-based fold can become “all nights” or “all days,” and AUPRC moves because of prevalence, not the model.
+
+A patient shorter than 6 × (minimum test + gap) is not put in the test; their windows can stay in train only. The scaler is still fit only on that fold’s training windows after the gap is removed.
+
+One patient, 1-day gap, chunks of ~7 days:
+
+days: 1——7, gap, 8——14 test (fold 1) fold 2 trains on everything before the next gap, then tests the next week fold 3 trains on a longer past and tests the week after that
+
+Early days never enter the test. Folds are unequal: the first has a short train, the last a long one, so read AUPRC per fold, not only the mean. On the old ReplayBG, 0.37 ± 0.31 came from folds that were different patients with different hypo rates. After a time cut every fold contains all patients, so the spread is about time, not about who was left out.
+
 ## Datasets (this run)
 
 | Dataset | Source | Windows | Patients | Window hypo rate |

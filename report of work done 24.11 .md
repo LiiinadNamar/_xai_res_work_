@@ -106,6 +106,9 @@ One fit per dataset and model, on the time split.
 
 ## What to do next
 
+On simglucose, drop one channel at a time on single windows and check whether the score falls on the cause the simulator already knows: low glucose, insulin, or carbs. **Because** this provides a test of the method. The simulator only includes glucose, insulin, and food, and it’s clear which channel is at fault. If the explanation is incorrect here, it will also be incorrect on HUPA's real data.
+
+And then start think about adding modalities to the model (pulse, activity etc.)
 
 
 
